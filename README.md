@@ -24,21 +24,19 @@ To send a message run the app and parse arguments i.e.
 
 ```python run.py send --channel channelname --server "server:port" --group group_name```
 
-send - The command
-channel - The channel to send the message to.
-group - A group to send messages to. Group is optional
+- send - The command
+- channel - The channel to send the message to.
+- group - A group to send messages to. Group is optional
 
 To receive a message via the app run 
 ```python run.py receive --channel channelname --from start_from --server "server:port" --group group_name```
 
-receive - The command
-channel - The channel to receive the message from
-from - The point to start receiving messages from, options will be either start | latest. If
-set to “start”, then this receiver will receive all messages it has not yet received before.
-The “latest” option means only messages sent while the receiver is up will be received
-group - A group to receive messages from. Group is optional
+- receive - The command
+- channel - The channel to receive the message from
+- from - The point to start receiving messages from, options will be either start | latest. If set to “start”, then this receiver will receive all messages it has not yet received before. The “latest” option means only messages sent while the receiver is up will be received
+- group - A group to receive messages from. Group is optional
 
-The option, --server “server:port”, is where the Kafka connection string will be supplied
+- The option, --server “server:port”, is where the Kafka connection string will be supplied
 
 
 # Important to note
