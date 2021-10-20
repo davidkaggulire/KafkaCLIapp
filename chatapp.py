@@ -1,5 +1,6 @@
-from confluent_kafka import Producer
-from confluent_kafka import Consumer, KafkaError, KafkaException
+# chatapp.py
+
+from confluent_kafka import Producer, Consumer, KafkaError, KafkaException
 import argparse
 import sys
 
