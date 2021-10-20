@@ -43,6 +43,7 @@ def send_messages(args):
     p.flush()
     return True
 
+
 def read_messages(args):
     """
     function to read messages
