@@ -28,7 +28,8 @@ To send a message run the app and parse arguments i.e.
 - channel - The channel to send the message to.
 - group - A group to send messages to. Group is optional
 
-To receive a message via the app run 
+To receive a message via the app run
+ 
 ```python run.py receive --channel channelname --from start_from --server "server:port" --group group_name```
 
 - receive - The command
