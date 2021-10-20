@@ -19,6 +19,28 @@ To install dependencies run command ``` pip install -r requirements.txt ```
 11. toml==0.10.2
 12. tomli==1.2.1
 
+# How it works
+To send a message run the app and parse arguments i.e.
+
+```python run.py send --channel channelname --server "server:port" --group group_name```
+
+send - The command
+channel - The channel to send the message to.
+group - A group to send messages to. Group is optional
+
+To receive a message via the app run 
+```python run.py receive --channel channelname --from start_from --server "server:port" --group group_name```
+
+receive - The command
+channel - The channel to receive the message from
+from - The point to start receiving messages from, options will be either start | latest. If
+set to “start”, then this receiver will receive all messages it has not yet received before.
+The “latest” option means only messages sent while the receiver is up will be received
+group - A group to receive messages from. Group is optional
+
+The option, --server “server:port”, is where the Kafka connection string will be supplied
+
+
 # Important to note
 Apache Kafka and zookeeper should be installed on your machine. 
 Create a topic of which the producer shall send messages to and consumer receive messages from. This can be done using the command below
