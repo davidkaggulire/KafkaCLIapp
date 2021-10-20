@@ -43,6 +43,6 @@ To receive a message via the app run
 Apache Kafka and zookeeper should be installed on your machine. 
 Create a topic of which the producer shall send messages to and consumer receive messages from. This can be done using the command below
 
-```$ bin/kafka-topics.sh --create --topic quickstart-events --bootstrap-server localhost:9092 --partition 1 --replication-factor 1```
+```$ bin/kafka-topics.sh --create --topic quickstart-events --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1```
 
 More information can be got from http://kafka.apache.org/documentation/#quickstart
