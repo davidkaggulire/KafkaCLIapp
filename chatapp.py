@@ -50,7 +50,7 @@ def read_messages(args):
     function to read messages
     """
     message_level = {
-        'start': 'earliest',
+        'start': 'beginning',
         'latest': 'latest'
     }
     c = Consumer({
