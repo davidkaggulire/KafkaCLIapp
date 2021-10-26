@@ -5,7 +5,7 @@ import argparse
 import sys
 
 
-def parse_args():
+def parsed_args(args):
     """
     parse command line arguments needed for Kafka
     """
@@ -15,14 +15,22 @@ def parse_args():
     parser.add_argument('--server', required=True, help="server connection")
     parser.add_argument('--group', help="group to send messages to")
     parser.add_argument('--from', choices=['start', 'latest'], default='start', help="choose which messages by start or latest")
-    args = parser.parse_args()
+    args = parser.parse_args(args)
     return vars(args)
+
+
+def get_input():
+    data = input("Enter message to send or 'q' to quit: ")
+    if data == 'q':
+        sys.exit(0)
+    return data
 
 
 def send_messages(args):
     """
     function to send messages
     """
+    print(args)
     connection = args['server']
     print(f"{connection} is the connection")
     p = Producer({'bootstrap.servers': connection})
@@ -30,17 +38,15 @@ def send_messages(args):
     def delivery_report(err, msg):
         """ Called once for each message produced to indicate delivery result.
             Triggered by poll() or flush(). """
-        if err is not None:
+        if err:
             print('Message delivery failed: {}'.format(err))
         else:
             print('Message delivered to {} [{}]'.format(msg.topic(), msg.partition()))
     
-    data = input("Enter message to send or 'q' to quit: ")
+    data = get_input()
 
-    if data == 'q':
-        sys.exit(0)
-
-    p.produce('chat', data.encode('utf-8'), callback=delivery_report)
+    channel = args['channel']
+    p.produce(channel, data.encode('utf-8'), callback=delivery_report)
     p.flush()
     return True
 
@@ -55,7 +61,7 @@ def read_messages(args):
     }
     c = Consumer({
         'bootstrap.servers': args['server'],
-        'group.id': 'mygroup',
+        'group.id': args['group'],
         'auto.offset.reset': message_level[args['from']]
     })
     try:
