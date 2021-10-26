@@ -1,4 +1,4 @@
-[![codecov](https://codecov.io/gh/davidkaggulire/KafkaCLIapp/branch/main/graph/badge.svg?token=FK4L7HYDKH)](https://codecov.io/gh/davidkaggulire/KafkaCLIapp)
+[![codecov](https://codecov.io/gh/davidkaggulire/KafkaCLIapp/branch/main/graph/badge.svg?token=A5IQP2IJOU)](https://codecov.io/gh/davidkaggulire/KafkaCLIapp)
 
 # KafkaCLIapp
 Command-line driven program that allows message exchange.
