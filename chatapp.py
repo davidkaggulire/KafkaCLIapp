@@ -66,7 +66,6 @@ def read_messages(args):
     start_from = args['from']
     group = args['group']
 
-
     print(f"You are receiving from the channel: {channel}")
     print(f"You are receiving from the {start_from}")
     print(f"You are receiving through the server {server}")
