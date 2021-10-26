@@ -1,6 +1,6 @@
 # chatapp.py
 
-from confluent_kafka import Producer, Consumer, KafkaError, KafkaException
+from confluent_kafka import Producer, Consumer, KafkaError
 import argparse
 import sys
 
@@ -26,22 +26,21 @@ def get_input():
     return data
 
 
+def delivery_report(err, msg):
+    """ Called once for each message produced to indicate delivery result.
+        Triggered by poll() or flush(). """
+    if err:
+        print('Message delivery failed: {}'.format(err))
+    else:
+        print('Message delivered to {} [{}]'.format(msg.topic(), msg.partition()))
+
+
 def send_messages(args):
     """
     function to send messages
     """
-    print(args)
     connection = args['server']
-    print(f"{connection} is the connection")
-    p = Producer({'bootstrap.servers': connection})
-
-    def delivery_report(err, msg):
-        """ Called once for each message produced to indicate delivery result.
-            Triggered by poll() or flush(). """
-        if err:
-            print('Message delivery failed: {}'.format(err))
-        else:
-            print('Message delivered to {} [{}]'.format(msg.topic(), msg.partition()))
+    p = Producer({'bootstrap.servers': connection})    
     
     data = get_input()
 
@@ -78,7 +77,7 @@ def read_messages(args):
                     continue
 
             print('Received message: {}'.format(msg.value().decode('utf-8')))
-    except KafkaException:
+    except KeyboardInterrupt:
         pass
     
     finally:

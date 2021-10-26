@@ -1,4 +1,5 @@
-""" tests.py """
+# tests.py
+
 import sys
 import os
 
@@ -6,17 +7,16 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.dirname(SCRIPT_DIR))
 
 import unittest
-import argparse
 from unittest.mock import patch
-from argparse import ArgumentParser
 from confluent_kafka import Producer
 from confluent_kafka import Consumer, KafkaError, KafkaException
-from chatapp import parsed_args, read_messages, send_messages, get_input
+from chatapp import parsed_args, read_messages, send_messages, get_input, delivery_report
 
 
 class TestChatApp(unittest.TestCase):
 
     def test_empty_parsed_args(self):
+        """test parsed_args func with empty args"""
         with self.assertRaises(SystemExit):
             parsed_args(sys.argv[1:])
 
@@ -46,6 +46,7 @@ class TestChatApp(unittest.TestCase):
 
 
     def test_get_input_func(self):
+        """test get_input function"""
         with patch('builtins.input', return_value='y'):
             assert get_input() == 'y'
         with patch('builtins.input', return_value='q'):
@@ -54,6 +55,10 @@ class TestChatApp(unittest.TestCase):
             with patch('builtins.input', return_value='q'):
                 get_input()
         self.assertEqual(cm.exception.code, 0)
+
+    
+    # def test_delivery_report(self):
+    #     self.assertRaises(Exception, delivery_report)
 
 
     def test_send_messages(self):
@@ -67,9 +72,9 @@ class TestChatApp(unittest.TestCase):
 
 
     def test_read_messages(self):
-        args = {'command': 'receive', 'channel': 'chat', 'server': 'localhost:9092', 'group': None, 'from': 'start'}
+        """test reading message from Kafka"""
+        args = {'command': 'receive', 'channel': 'chat', 'server': 'localhost:9092', 'group': 'hello', 'from': 'start'}
         self.assertEqual(read_messages(args), True)
-
 
 
 if __name__ == '__main__':
