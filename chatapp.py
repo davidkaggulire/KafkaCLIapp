@@ -40,11 +40,18 @@ def send_messages(args):
     function to send messages
     """
     connection = args['server']
+    channel = args['channel']
+    group = args['group']
+
+    print(f"You have decided to send to the channel: {channel}")
+    print(f"You are sending through the server: {connection}")
+    print(f"You are sending through the group: {group}")
+
     p = Producer({'bootstrap.servers': connection})    
     
     data = get_input()
 
-    channel = args['channel']
+    
     p.produce(channel, data.encode('utf-8'), callback=delivery_report)
     p.flush()
     return True
@@ -54,6 +61,17 @@ def read_messages(args):
     """
     function to read messages
     """
+    channel = args['channel']
+    server = args['server']
+    start_from = args['from']
+    group = args['group']
+
+
+    print(f"You are receiving from the channel: {channel}")
+    print(f"You are receiving from the {start_from}")
+    print(f"You are receiving through the server {server}")
+    print(f"You are part of the receiving group: {group}")
+    
     message_level = {
         'start': 'beginning',
         'latest': 'latest'
