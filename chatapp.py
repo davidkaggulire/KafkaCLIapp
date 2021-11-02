@@ -57,7 +57,7 @@ def send_messages(args):
     return True
 
 
-def read_messages(args):
+def consume_messages(args):
     """
     function to read messages
     """
@@ -80,7 +80,13 @@ def read_messages(args):
         'group.id': args['group'],
         'auto.offset.reset': message_level[args['from']]
     })
+
+    return c
+
+
+def read_messages(args):
     try:
+        c = consume_messages(args)
         c.subscribe([args['channel']])
 
         while True:
