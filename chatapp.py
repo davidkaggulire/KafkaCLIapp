@@ -26,13 +26,18 @@ def get_input():
     return data
 
 
+def encode_func(func):
+    returned_data = func()
+    return returned_data.encode('utf-8')
+
+
 def delivery_report(err, msg):
     """ Called once for each message produced to indicate delivery result.
         Triggered by poll() or flush(). """
     if err:
-        print('Message delivery failed: {}'.format(err))
+        return 'Message delivery failed: {}'.format(err)
     else:
-        print('Message delivered to {} [{}]'.format(msg.topic(), msg.partition()))
+        return 'Message delivered to {} [{}]'.format(msg.topic(), msg.partition())
 
 
 def send_messages(args):
@@ -49,10 +54,9 @@ def send_messages(args):
 
     p = Producer({'bootstrap.servers': connection})    
     
-    data = get_input()
-
+    data = encode_func(get_input)
     
-    p.produce(channel, data.encode('utf-8'), callback=delivery_report)
+    p.produce(channel, data, callback=delivery_report)
     p.flush()
     return True
 
@@ -85,23 +89,21 @@ def consume_messages(args):
 
 
 def read_messages(args):
-    try:
-        c = consume_messages(args)
-        c.subscribe([args['channel']])
-
+    c = consume_messages(args)
+    c.subscribe([args['channel']])
+    try:  
         while True:
             msg = c.poll(1.0)
 
             if msg is None:
                 continue
             if msg.error():
-                if msg.error().code() == KafkaError._PARTITION_EOF:
-                    print("Consumer error: {}".format(msg.error()))
-                    continue
+                print("Consumer error: {}".format(msg.error()))
+                continue
 
             print('Received message: {}'.format(msg.value().decode('utf-8')))
     except KeyboardInterrupt:
-        pass
+        sys.stderr.write('%% Aborted by user\n')
     
     finally:
         c.close()
