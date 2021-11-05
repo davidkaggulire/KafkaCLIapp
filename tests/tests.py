@@ -2,6 +2,7 @@
 
 import sys
 import os
+from typing import Tuple
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.dirname(SCRIPT_DIR))
@@ -13,6 +14,7 @@ from confluent_kafka import Consumer, KafkaError, KafkaException
 from chatapp import consume_messages, parsed_args, read_messages, send_messages, get_input, delivery_report, encode_func
 from chatapp import consume_messages, encode_func, parsed_args, read_messages, send_messages, get_input, delivery_report
 from unittest import mock
+import chatapp
 
 
 class TestChatApp(unittest.TestCase):
@@ -44,9 +46,6 @@ class TestChatApp(unittest.TestCase):
     @patch('chatapp.parsed_args')
     def test_parser_receive(self, test_patch):
         """testing parsing command receive"""
-        test_patch = Mock()
-        test_patch.method()
-        test_patch.method.assert_called()
         test_patch.return_value = {'command': 'receive', 'channel': 'chat',
                                    'server': 'localhost:9092', 'group': None, 'from': 'start'}
         parser = parsed_args(['receive', '--channel', 'chat',
@@ -67,18 +66,22 @@ class TestChatApp(unittest.TestCase):
         self.assertEqual(cm.exception.code, 0)
 
 
-    @patch('chatapp.send_messages', autospec=True)
-    def test_send_messages(self, mock_send):
+    @patch('chatapp.send_messages')
+    @patch('chatapp.encode_func')
+    @patch('chatapp.delivery_report')
+    def test_send_messages(self, mock_send, mock_encode, mock_delivery):
         """testing sending of message via kafka"""
         args = {'command': 'send', 'channel': 'chat',
-                'server': 'localhost:9092', 'group': None, 'from': 'start'}
-        mock_send.return_value = True
+                'server': 'localhost:9092', 'group': "hello", 'from': 'start'}
         
-        self.assertEqual(mock_send.return_value, True)
-        with patch('builtins.input', return_value='hello world david'):
-            self.assertEqual(send_messages(args), True)
-            self.assertEqual(mock_send.return_value, True)
-            
+        mock_encode.return_value = b'some content you want to decode'
+        mock_send.return_value = True
+
+        with patch('builtins.input', return_value=b'some content you want to decode'):
+            result = send_messages(args)
+            assert mock_encode.called is True
+
+            self.assertEqual(result, mock_send())
         with patch('builtins.input', return_value='q'):
             self.assertRaises(SystemExit)
 
